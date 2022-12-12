@@ -1,4 +1,4 @@
 package com.example.the2048.presentation
 
-class GameFragmentViewModelFactory {
+class GameFieldViewModelFactory {
 }
