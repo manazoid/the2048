@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">the2048</string>
+    <string name="app_name">The 2048</string>
+    <string name="rules_title">Правила</string>
+    <string name="rules">Габриэль Черулли, создатель игры, предлагает игрокам поле с 16 клеточками, на котором с каждым ходом появляется цифра два или четыре. Суть заключается в том, что нужно объединять квадратики с одинаковыми значениями до тех пор, пока не получиться цифра 2048.</string>
+    <string name="start_button" >Начать игру</string>
+    <string name="retry_button" >Повторить</string>
 </resources>

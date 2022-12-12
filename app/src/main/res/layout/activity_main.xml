@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
+    android:name="com.example.the2048.presentation.WelcomeFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="">
+    tools:layout="@layout/fragment_welcome"
+    tools:name="com.example.the2048.presentation.WelcomeFragment">
 
 </androidx.fragment.app.FragmentContainerView>
