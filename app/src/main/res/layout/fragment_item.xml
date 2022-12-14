@@ -2,19 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="85dp"
     android:minHeight="85dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/single_card"
+        android:id="@+id/cv_empty"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
+        android:layout_margin="2dp"
         android:orientation="vertical"
         android:textAlignment="center"
         app:cardBackgroundColor="@color/step_1"
@@ -34,12 +32,12 @@
             <TextView
                 android:id="@+id/card_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="2048"
                 android:textAlignment="center"
                 android:textColor="@color/title_dark"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

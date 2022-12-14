@@ -1,5 +1,7 @@
 package com.example.the2048.domain.entity
 
-data class GameField(
-    val field: ArrayList<Int>
+import android.opengl.Matrix
+
+data class GameField (
+    val field: List<List<Int>>
 )

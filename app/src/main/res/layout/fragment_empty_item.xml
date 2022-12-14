@@ -2,19 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/empty_card_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="85dp"
     android:minHeight="85dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/single_card"
+        android:id="@+id/cv_empty"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
         android:orientation="vertical"
         android:textAlignment="center"
         app:cardBackgroundColor="@color/step_1"
@@ -23,5 +20,6 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_marginBaseline="2dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

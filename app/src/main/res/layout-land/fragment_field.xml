@@ -26,37 +26,37 @@
         android:text="00:00"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_left"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/gl_top" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="525dp" />
+        app:layout_constraintGuide_begin="392dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="18dp" />
+        app:layout_constraintGuide_begin="185dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="16dp" />
+        app:layout_constraintGuide_end="175dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="150dp" />
+        app:layout_constraintGuide_begin="18dp" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcv_0_0"
@@ -265,29 +265,5 @@
         app:layout_constraintTop_toBottomOf="@id/fcv_3_2"
         tools:layout="@layout/fragment_empty_item"
         tools:name="com.example.the2048.presentation.GameItemFragment" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/title_dark"
-        android:minWidth="100dp"
-        android:minHeight="60dp"
-        android:text="@string/reset_label"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
-        app:layout_constraintTop_toTopOf="@+id/gl_bottom" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/title_dark"
-        android:minWidth="100dp"
-        android:minHeight="60dp"
-        android:text="@string/undo_label"
-        app:layout_constraintEnd_toStartOf="@+id/gl_right"
-        app:layout_constraintTop_toTopOf="@+id/gl_bottom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
