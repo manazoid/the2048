@@ -5,18 +5,19 @@
     android:id="@+id/card_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minWidth="85dp"
-    android:minHeight="85dp">
+    android:minWidth="90dp"
+    android:minHeight="90dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_empty"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="2dp"
+        android:layout_margin="4dp"
         android:orientation="vertical"
         android:textAlignment="center"
         app:cardBackgroundColor="@color/step_1"
         app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,12 +28,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal|center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="2dp">
 
             <TextView
                 android:id="@+id/card_text"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:gravity="center_horizontal|center_vertical"
                 android:text="2048"
                 android:textAlignment="center"
                 android:textColor="@color/title_dark"

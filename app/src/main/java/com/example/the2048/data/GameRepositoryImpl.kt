@@ -1,5 +1,6 @@
 package com.example.the2048.data
 
+import android.util.Log
 import com.example.the2048.domain.entity.Direction
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
@@ -39,9 +40,10 @@ object GameRepositoryImpl : GameRepository {
         while (freeItemsCount != MIN_ITEM_ITERATION) {
             freeItemsCount--
             val chance = Random.nextFloat()
-            val x = Random.nextInt()
+//            val x = Random.nextInt()
             if (chance >= .9) {
-                newItemList.add(NewItem(0))
+                Log.d("chance", chance.toString())
+//                newItemList.add(NewItem(0, List<Int>(1)))
             }
         }
         return parseNewItemList(newItemList)

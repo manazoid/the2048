@@ -5,6 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/undo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/title_dark"
+        android:minWidth="100dp"
+        android:minHeight="60dp"
+        android:text="@string/undo_label"
+        app:layout_constraintBottom_toTopOf="@+id/gl_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_right"
+        app:layout_constraintTop_toBottomOf="@+id/reset_button" />
+
     <ImageView
         android:id="@+id/bg_image"
         android:layout_width="0dp"
@@ -265,5 +279,19 @@
         app:layout_constraintTop_toBottomOf="@id/fcv_3_2"
         tools:layout="@layout/fragment_empty_item"
         tools:name="com.example.the2048.presentation.GameItemFragment" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/title_dark"
+        android:minWidth="100dp"
+        android:minHeight="60dp"
+        android:text="@string/reset_label"
+        app:layout_constraintBottom_toTopOf="@+id/undo_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_right"
+        app:layout_constraintTop_toTopOf="@+id/gl_top" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
