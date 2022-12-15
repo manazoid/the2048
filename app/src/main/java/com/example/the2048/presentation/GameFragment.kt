@@ -6,9 +6,12 @@ import android.util.Log
 import android.view.*
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import com.example.the2048.R
 import com.example.the2048.databinding.FragmentFieldBinding
+import com.example.the2048.domain.entity.GameField
+import kotlin.math.abs
 
 class GameFragment : Fragment() {
 
@@ -40,26 +43,34 @@ class GameFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        launchGameField()
+        viewModel.startGame()
+        viewModel.generateNewItem(viewModel.field.value as GameField)
+        viewModel.items.observe(viewLifecycleOwner) {
+            Log.d("GameFragment", "observe items $it")
+            createNewFragmentView(it[0].number.toString())
+        }
+        viewModel.field.observe(viewLifecycleOwner) {
+            Log.d("GameFragment", "observe field $it")
+        }
         binding.root.setOnTouchListener { _, event ->
             mDetector.onTouchEvent(event)
             true
         }
     }
 
-    private fun launchGameField() {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, GameItemFragment.newInstance())
-            .addToBackStack(null)
-            .commit()
+    private fun createNewFragmentView(itemText: String) {
+        val fcvItem00 = FragmentContainerView(viewModel.application)
+        _binding?.root?.addView(fcvItem00)
     }
 
-    private class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
+//    private fun launchNewGameItem(itemText: String) {
+//        requireActivity().supportFragmentManager.beginTransaction()
+//            .replace(R.id.fcvItem00, GameItemFragment.newInstance(itemText))
+//            .addToBackStack(null)
+//            .commit()
+//    }
 
-        override fun onDown(event: MotionEvent): Boolean {
-            Log.d("MyGestureListener", "onDown: $event")
-            return true
-        }
+    private open inner class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onFling(
             event1: MotionEvent,
@@ -67,9 +78,55 @@ class GameFragment : Fragment() {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            Log.d("MyGestureListener", "onFling: $event1 – $event2")
+            Log.d("MyGestureListener", "onFling: $velocityX – $velocityY")
+            val delta = abs(velocityX) - abs(velocityY)
+            val swipeDetectAxisY = detectDirection(delta)
+            if (swipeDetectAxisY) {
+                // DETECT
+                // TRUE -> ↑
+                // FALSE -> ↓
+                val detect = detectDirection(velocityY)
+                if (detect) {
+                    onSwipeTop()
+                } else {
+                    onSwipeBottom()
+                }
+                Log.d("swipeDetectAxisY", "move velocityY $detect")
+            } else {
+                // DETECT
+                // TRUE -> ←
+                // FALSE -> →
+                val detect = detectDirection(velocityX)
+                if (detect) {
+                    onSwipeLeft()
+                } else {
+                    onSwipeRight()
+                }
+                Log.d("swipeDetectAxisX", "move velocityX $detect")
+            }
+            generateNewItem()
             return true
         }
+
+        private fun detectDirection(fling: Float): Boolean {
+            return fling < 0
+        }
+
+        open fun onSwipeRight() {
+        }
+
+        open fun onSwipeLeft() {
+        }
+
+        open fun onSwipeTop() {
+        }
+
+        open fun onSwipeBottom() {
+        }
+    }
+
+    private fun generateNewItem() {
+        viewModel.generateNewItem(viewModel.field.value as GameField)
     }
 
     companion object {

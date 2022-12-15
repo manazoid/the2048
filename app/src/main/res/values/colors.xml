@@ -14,11 +14,12 @@
     <color name="step_1">#FFeee4da</color>
     <color name="step_2">#FFeee1c9</color>
     <color name="step_3">#FFf3b27a</color>
-    <color name="step_4">#FFf77c5f</color>
-    <color name="step_5">#FFf75f3b</color>
-    <color name="step_6">#FFedd073</color>
-    <color name="step_7">#FFedcc61</color>
-    <color name="step_8">#FFedc850</color>
-    <color name="step_9">#FFedc53f</color>
-    <color name="step_10">#FFedc22e</color>
+    <color name="step_4">#FFf59563</color>
+    <color name="step_5">#FFf77c5f</color>
+    <color name="step_6">#FFf75f3b</color>
+    <color name="step_7">#FFedd073</color>
+    <color name="step_8">#FFedcc61</color>
+    <color name="step_9">#FFedc850</color>
+    <color name="step_10">#FFedc53f</color>
+    <color name="step_11">#FFedc22e</color>
 </resources>
