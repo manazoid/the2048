@@ -9,6 +9,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.the2048.R
+import com.example.the2048.databinding.ActivityGameBinding
 import com.example.the2048.databinding.FragmentFieldBinding
 import com.example.the2048.domain.entity.GameField
 import kotlin.math.abs
@@ -23,11 +24,10 @@ class GameActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
     }
-    private var _binding: FragmentFieldBinding? = null
-    private val binding: FragmentFieldBinding
-        get() = _binding ?: throw RuntimeException("FragmentWelcomeBinding == null")
+    private var _binding: ActivityGameBinding ? = null
+    private val binding: ActivityGameBinding
+        get() = _binding ?: throw RuntimeException("ActivityGameBinding == null")
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -39,17 +39,27 @@ class GameActivity : AppCompatActivity() {
 //        }
         viewModel.field.observe(this) {
             Log.d("GameFragment", "observe field $it")
+
+//            val item = it.field[0][0]
+//            launchNewGameItem(binding.fcvItem00.id, item.toString())
         }
-        _binding = FragmentFieldBinding.inflate(layoutInflater)
-        binding.root.setOnTouchListener { _, event ->
-            mDetector.onTouchEvent(event)
-            true
-        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        _binding = ActivityGameBinding.inflate(layoutInflater)
+        launchNewGameItem(R.id.fcv_item_00, "2048")
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        mDetector.onTouchEvent(event)
+        return super.onTouchEvent(event)
     }
 
     private fun launchNewGameItem(resId: Int, itemText: String) {
         supportFragmentManager.beginTransaction()
             .replace(resId, GameItemFragment.newInstance(itemText))
+            .addToBackStack(null)
             .commit()
     }
 
