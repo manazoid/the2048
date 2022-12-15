@@ -28,7 +28,10 @@ class GameItemFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val text = arguments?.getString(ITEM_TEXT)
-        binding.cardText.text = text ?: ""
+        binding.cardText.text = when (text) {
+            "0" -> ""
+            else -> text
+        }
         val colorId = when (text) {
                 ITEM_1 -> R.color.step_1
                 ITEM_2 -> R.color.step_2
@@ -61,8 +64,8 @@ class GameItemFragment: Fragment() {
         private const val ITEM_10 = "1024"
         private const val ITEM_11 = "2048"
 
-        fun newInstance(itemText: String?): GameFragment {
-            return GameFragment().apply {
+        fun newInstance(itemText: String?): GameItemFragment {
+            return GameItemFragment().apply {
                 arguments = Bundle().apply {
                     putString(ITEM_TEXT, itemText)
                 }

@@ -25,17 +25,17 @@ class WelcomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.buttonStart.setOnClickListener {
-            launchChooseLevelFragment()
-        }
+//        binding.buttonStart.setOnClickListener {
+//            launchChooseLevelFragment()
+//        }
     }
 
-    private fun launchChooseLevelFragment() {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, GameFragment.newInstance())
-            .addToBackStack(null)
-            .commit()
-    }
+//    private fun launchChooseLevelFragment() {
+//        requireActivity().supportFragmentManager.beginTransaction()
+//            .replace(R.id.main_container, GameFragment.newInstance())
+//            .addToBackStack(null)
+//            .commit()
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
