@@ -4,19 +4,21 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.the2048.R
 import com.example.the2048.databinding.FragmentFieldBinding
 import com.example.the2048.domain.entity.GameField
 import kotlin.math.abs
 
-class GameFragment : Fragment() {
+class GameActivity : AppCompatActivity() {
 
     private lateinit var mDetector: GestureDetectorCompat
 
     private val viewModelFactory by lazy {
-        GameViewModelFactory(requireActivity().application)
+        GameViewModelFactory(application)
     }
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
@@ -25,40 +27,28 @@ class GameFragment : Fragment() {
     private val binding: FragmentFieldBinding
         get() = _binding ?: throw RuntimeException("FragmentWelcomeBinding == null")
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_game)
         mDetector = GestureDetectorCompat(viewModel.application, MyGestureListener())
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentFieldBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         viewModel.startGame()
 //        viewModel.generateNewItem(viewModel.field.value as GameField)
 //        viewModel.items.observe(viewLifecycleOwner) {
 //            Log.d("GameFragment", "observe items $it")
 //        }
-        viewModel.field.observe(viewLifecycleOwner) {
+        viewModel.field.observe(this) {
             Log.d("GameFragment", "observe field $it")
         }
+        _binding = FragmentFieldBinding.inflate(layoutInflater)
         binding.root.setOnTouchListener { _, event ->
             mDetector.onTouchEvent(event)
             true
         }
     }
 
-
-
     private fun launchNewGameItem(resId: Int, itemText: String) {
-        childFragmentManager.beginTransaction()
+        supportFragmentManager.beginTransaction()
             .replace(resId, GameItemFragment.newInstance(itemText))
             .commit()
     }
@@ -120,12 +110,5 @@ class GameFragment : Fragment() {
 
     private fun generateNewItem() {
         viewModel.generateNewItem(viewModel.field.value as GameField)
-    }
-
-    companion object {
-
-        fun newInstance(): GameFragment {
-            return GameFragment()
-        }
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.the2048.data.GameRepositoryImpl
+import com.example.the2048.domain.entity.Direction
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
 import com.example.the2048.domain.usecases.GenerateNewItemsUseCase
@@ -32,7 +33,6 @@ class GameViewModel(
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
         )
-        Log.d("GameViewModel", "GameField $field")
         _field.value = GameField(field)
     }
 
@@ -45,4 +45,25 @@ class GameViewModel(
             _field.value?.field?.get(x)?.set(y, it.number)
         }
     }
+
+//    fun moveItems(gameField: GameField, direction: Direction) {
+//        when (direction) {
+//            Direction.RIGHT -> {
+//
+//            }
+//            Direction.DOWN -> {
+//
+//            }
+//            Direction.LEFT -> {
+//
+//            }
+//            Direction.UP -> {
+//
+//            }
+//        }
+//    }
+//
+//    private fun iterateItemsX(gameField: GameField, startIndex: Int, finishIndex: Int) {
+//
+//    }
 }

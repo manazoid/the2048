@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/field_background"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_00"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_01"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_02"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_03"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_10"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_11"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_12"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_13"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_20"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_21"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_22"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_23"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_30"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_31"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_32"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_33"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
