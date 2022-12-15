@@ -10,16 +10,10 @@ object GameRepositoryImpl : GameRepository {
 
     private const val PRIMARY_NUMBER = 2
     private const val SECONDARY_NUMBER = 4
-    private const val MIN_CORD_INCLUSIVE = 0
-    private const val MAX_CORD_EXCLUSIVE = 4
     private const val EMPTY_ITEM = 0
-    private const val MIN_ITEM_ITERATION = 0
-    private const val AVERAGE_ITEM_ITERATION = 1
-    private const val MAX_ITEM_ITERATION = 2
 
-    override fun generateNewItems(gameField: GameField): List<NewItem>? {
+    override fun generateNewItem(gameField: GameField): NewItem? {
         val freeItemsIndexes = HashSet<List<Int>>()
-        Log.d("GameRepositoryImpl", "generateNewItems $gameField")
         gameField.field.forEachIndexed { x, row ->
             row.forEachIndexed { y, item ->
                 if (item == EMPTY_ITEM) {
@@ -28,27 +22,17 @@ object GameRepositoryImpl : GameRepository {
                 }
             }
         }
-        val newItemList = HashSet<NewItem>()
         if (freeItemsIndexes.isEmpty()) {
             return null
         }
-        var freeItemsCount = if (freeItemsIndexes.size == AVERAGE_ITEM_ITERATION) {
-            AVERAGE_ITEM_ITERATION
+        val chance = Random.nextFloat()
+        val x = Random.nextInt(freeItemsIndexes.size)
+        val cords = freeItemsIndexes.toList()[x]
+        Log.d("chance", chance.toString())
+        return if (chance >= .9) {
+            NewItem(SECONDARY_NUMBER, cords)
         } else {
-            MAX_ITEM_ITERATION
+            NewItem(PRIMARY_NUMBER, cords)
         }
-        while (freeItemsCount != MIN_ITEM_ITERATION) {
-            freeItemsCount--
-            val chance = Random.nextFloat()
-            val x = Random.nextInt(freeItemsIndexes.size)
-            val cords = freeItemsIndexes.toList()[x]
-            Log.d("chance", chance.toString())
-            if (chance >= .9) {
-                newItemList.add(NewItem(SECONDARY_NUMBER, cords))
-            } else {
-                newItemList.add(NewItem(PRIMARY_NUMBER, cords))
-            }
-        }
-        return newItemList.toList()
     }
 }

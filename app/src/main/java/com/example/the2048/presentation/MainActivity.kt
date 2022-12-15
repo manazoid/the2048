@@ -3,13 +3,14 @@ package com.example.the2048.presentation
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
-import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import com.example.the2048.R
 import com.example.the2048.databinding.ActivityMainBinding
 import com.example.the2048.domain.entity.GameField
+import com.example.the2048.domain.entity.NewItem
 import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
@@ -29,31 +30,67 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mDetector = GestureDetectorCompat(viewModel.application, MyGestureListener())
-        viewModel.startGame()
-        viewModel.generateNewItem(viewModel.field.value as GameField)
-//        viewModel.items.observe(viewLifecycleOwner) {
-//            Log.d("GameFragment", "observe items $it")
-//        }
+        applyGestureDetector()
+        startGameEvent()
+        observeLiveData()
+    }
+
+    private fun observeLiveData() {
+        viewModel.items.observe(this) {
+            Log.d("GameFragment", "observe items $it")
+        }
         viewModel.field.observe(this) {
             Log.d("GameFragment", "observe field $it")
+            fieldGenerate(it, viewModel.items.value!!)
+        }
+        viewModel.shouldGameFinish.observe(this) {
+            Log.d("GameFragment", "shouldGameFinish")
+        }
+    }
 
-            it.field.forEachIndexed { x, row ->
-                val tableRow = when (x) {
-                    0 -> binding.tr1
-                    1 -> binding.tr2
-                    2 -> binding.tr3
-                    3 -> binding.tr4
-                    else -> throw RuntimeException(
-                        "viewModel.field limit 4 items. invalid index $x"
-                    )
-                }
-                row.forEachIndexed { y, item ->
+    private fun startTileAnimation(it: NewItem) {
+        val x = it.coordinates[0]
+        val y = it.coordinates[1]
+        val scale = AnimationUtils.loadAnimation(this, R.anim.scale)
+        val tableRow = tableRow(x)
+        val current = tableRow.getVirtualChildAt(y)
+        current.startAnimation(scale)
+    }
+
+    private fun tableRow(x: Int) = when (x) {
+        0 -> binding.tr1
+        1 -> binding.tr2
+        2 -> binding.tr3
+        3 -> binding.tr4
+        else -> throw RuntimeException(
+            "tableRow limit 4 items. invalid index $x"
+        )
+    }
+
+    private fun fieldGenerate(gameField: GameField, update: NewItem) {
+        gameField.field.forEachIndexed { x, row ->
+            val tableRow = tableRow(x)
+            row.forEachIndexed { y, item ->
+                if (item != 0) {
+                    var animation = false
+                    if (x == update.coordinates[0]) {
+                        if (y == update.coordinates[1]) {
+                            animation = true
+                        }
+                    }
                     val current = tableRow.getVirtualChildAt(y)
-                    launchNewGameItem(current.id, item.toString())
+                    launchNewGameItem(current.id, item.toString(), animation)
                 }
             }
         }
+    }
+
+    private fun startGameEvent() {
+        viewModel.startGame()
+    }
+
+    private fun applyGestureDetector() {
+        mDetector = GestureDetectorCompat(viewModel.application, MyGestureListener())
     }
 
     override fun onStart() {
@@ -66,10 +103,9 @@ class MainActivity : AppCompatActivity() {
         return super.onTouchEvent(event)
     }
 
-    private fun launchNewGameItem(resId: Int, itemText: String) {
+    private fun launchNewGameItem(resId: Int, itemText: String, animation: Boolean) {
         supportFragmentManager.beginTransaction()
-            .replace(resId, GameItemFragment.newInstance(itemText))
-            .addToBackStack(null)
+            .replace(resId, GameItemFragment.newInstance(itemText, animation))
             .commit()
     }
 
@@ -126,6 +162,11 @@ class MainActivity : AppCompatActivity() {
 
         open fun onSwipeBottom() {
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun generateNewItem() {

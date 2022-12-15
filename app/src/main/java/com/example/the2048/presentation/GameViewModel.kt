@@ -6,25 +6,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.the2048.data.GameRepositoryImpl
-import com.example.the2048.domain.entity.Direction
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
-import com.example.the2048.domain.usecases.GenerateNewItemsUseCase
+import com.example.the2048.domain.usecases.GenerateNewItemUseCase
 
 class GameViewModel(
     val application: Application
 ) : ViewModel() {
-    private val repository = GameRepositoryImpl
 
-    private val generateNewItemsUseCase = GenerateNewItemsUseCase(repository)
+    private val repository = GameRepositoryImpl
+    private val generateNewItemUseCase = GenerateNewItemUseCase(repository)
 
     private val _field = MutableLiveData<GameField>()
     val field: LiveData<GameField>
         get() = _field
 
-    private val _items = MutableLiveData<List<NewItem>>()
-    val items: LiveData<List<NewItem>>
+    private val _items = MutableLiveData<NewItem>()
+    val items: LiveData<NewItem>
         get() = _items
+
+    private val _shouldGameFinish = MutableLiveData<Unit>()
+    val shouldGameFinish: LiveData<Unit>
+        get() = _shouldGameFinish
 
     fun startGame() {
         val field = mutableListOf(
@@ -33,16 +36,24 @@ class GameViewModel(
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
         )
-        _field.value = GameField(field)
+        val newField = GameField(field)
+        _field.value = newField
+        repeat(2) {
+            generateNewItem(newField)
+        }
     }
 
     fun generateNewItem(gameField: GameField) {
-        val newItems = generateNewItemsUseCase(gameField)
-        _items.value = newItems
-        newItems?.forEach {
-            val x = it.coordinates[0]
-            val y = it.coordinates[1]
-            _field.value?.field?.get(x)?.set(y, it.number)
+        Log.d("GameViewModel", "generateNewItem $gameField")
+        val newItems = generateNewItemUseCase(gameField)
+        if (newItems == null) {
+            _shouldGameFinish.value = Unit
+        } else {
+            _items.value = newItems
+            val x = newItems.coordinates[0]
+            val y = newItems.coordinates[1]
+            gameField.field[x][y] = newItems.number
+            _field.value = gameField
         }
     }
 

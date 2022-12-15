@@ -5,7 +5,7 @@ import com.example.the2048.domain.entity.NewItem
 
 interface GameRepository {
 
-    fun generateNewItems(
+    fun generateNewItem(
         gameField: GameField
-    ): List<NewItem>?
+    ): NewItem?
 }
