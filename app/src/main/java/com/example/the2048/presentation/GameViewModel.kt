@@ -37,7 +37,7 @@ class GameViewModel(
             mutableListOf(2, 2, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
-            mutableListOf(0, 0, 0, 0),
+            mutableListOf(0, 0, 4, 4),
         )
         val newField = GameField(field)
         _field.value = newField
@@ -66,8 +66,8 @@ class GameViewModel(
         val field: List<List<Int>>
         when (direction) {
             Direction.RIGHT -> {
-                startIndex = MIN_FIELD_INDEX
-                finishIndex = MAX_FIELD_INDEX
+                startIndex = MAX_FIELD_INDEX
+                finishIndex = MIN_FIELD_INDEX
                 field = gameField.field
             }
             Direction.DOWN -> {
@@ -76,8 +76,8 @@ class GameViewModel(
                 field = swapAxisGameField(gameField.field)
             }
             Direction.LEFT -> {
-                startIndex = MAX_FIELD_INDEX
-                finishIndex = MIN_FIELD_INDEX
+                startIndex = MIN_FIELD_INDEX
+                finishIndex = MAX_FIELD_INDEX
                 field = gameField.field
             }
             Direction.UP -> {
@@ -86,14 +86,15 @@ class GameViewModel(
                 field = swapAxisGameField(gameField.field)
             }
         }
-//        val newField = if (direction == Direction.UP || direction == Direction.DOWN) {
+        val newField = if (direction == Direction.UP || direction == Direction.DOWN) {
             val newField = applyChanges(field, startIndex, finishIndex)
-        Log.d("GameViewModel", "applyChanges. before: $field after: $newField")
-//        } else {
-//            val swappedField = applyChanges(field, startIndex, finishIndex)
-//            swapAxisGameField(swappedField)
-//        }
-//        _field.value = GameField(field = newField as MutableList<MutableList<Int>>)
+            Log.d("GameViewModel", "applyChanges. before: $field after: $newField")
+            newField
+        } else {
+            val swappedField = applyChanges(field, startIndex, finishIndex)
+            swapAxisGameField(swappedField)
+        }
+        _field.value = GameField(field = newField as MutableList<MutableList<Int>>)
     }
 
     private fun applyChanges(
@@ -121,9 +122,8 @@ class GameViewModel(
     }
 
     private fun iterateItemsAxis(row: List<Int>, startIndex: Int, finishIndex: Int): List<Int> {
-        Log.d("GameViewModel", "iterateItemsAxis row $row")
         val newRow = row as MutableList<Int>
-        val joinIndexes = HashSet<Int>()
+        val joinIndexes = mutableListOf<Int>()
         val c = if (finishIndex == MAX_FIELD_INDEX) {
             1
         } else {
@@ -136,13 +136,12 @@ class GameViewModel(
                 joinIndexes.add(i)
             }
         }
-        if (joinIndexes.size == 3) {
-            joinIndexes.remove(1)
-        }
         joinIndexes.toList().forEach {
-            newRow[it] = row[it] + row[it-c]
+            newRow[it] = row[it] + row[it + c]
+            newRow[it + c] = 0
         }
         Log.d("GameViewModel", "iterateItemsAxis $row -> $newRow")
+        Log.d("GameViewModel", "joinIndexes $joinIndexes")
         return newRow.toList()
     }
 
