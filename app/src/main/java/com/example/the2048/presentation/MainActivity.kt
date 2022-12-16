@@ -9,6 +9,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.the2048.R
 import com.example.the2048.databinding.ActivityMainBinding
+import com.example.the2048.domain.entity.Direction
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
 import kotlin.math.abs
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 Log.d("swipeDetectAxisX", "move velocityX $detect")
             }
-            generateNewItem()
+//            generateNewItem()
             return true
         }
 
@@ -152,16 +153,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         open fun onSwipeRight() {
+            moveItemsByDirection(Direction.RIGHT)
         }
 
         open fun onSwipeLeft() {
+            moveItemsByDirection(Direction.LEFT)
         }
 
         open fun onSwipeTop() {
+            moveItemsByDirection(Direction.UP)
         }
 
         open fun onSwipeBottom() {
+            moveItemsByDirection(Direction.DOWN)
         }
+    }
+
+    private fun moveItemsByDirection(direction: Direction) {
+        viewModel.moveItems(viewModel.field.value as GameField, direction)
     }
 
     override fun onDestroy() {

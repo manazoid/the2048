@@ -6,9 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.the2048.data.GameRepositoryImpl
+import com.example.the2048.domain.entity.Direction
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
 import com.example.the2048.domain.usecases.GenerateNewItemUseCase
+
+private const val i1 = 0
 
 class GameViewModel(
     val application: Application
@@ -31,7 +34,7 @@ class GameViewModel(
 
     fun startGame() {
         val field = mutableListOf(
-            mutableListOf(0, 0, 0, 0),
+            mutableListOf(2, 2, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
@@ -57,24 +60,95 @@ class GameViewModel(
         }
     }
 
-//    fun moveItems(gameField: GameField, direction: Direction) {
-//        when (direction) {
-//            Direction.RIGHT -> {
-//
-//            }
-//            Direction.DOWN -> {
-//
-//            }
-//            Direction.LEFT -> {
-//
-//            }
-//            Direction.UP -> {
-//
-//            }
+    fun moveItems(gameField: GameField, direction: Direction) {
+        val startIndex: Int
+        val finishIndex: Int
+        val field: List<List<Int>>
+        when (direction) {
+            Direction.RIGHT -> {
+                startIndex = MIN_FIELD_INDEX
+                finishIndex = MAX_FIELD_INDEX
+                field = gameField.field
+            }
+            Direction.DOWN -> {
+                startIndex = MAX_FIELD_INDEX
+                finishIndex = MIN_FIELD_INDEX
+                field = swapAxisGameField(gameField.field)
+            }
+            Direction.LEFT -> {
+                startIndex = MAX_FIELD_INDEX
+                finishIndex = MIN_FIELD_INDEX
+                field = gameField.field
+            }
+            Direction.UP -> {
+                startIndex = MIN_FIELD_INDEX
+                finishIndex = MAX_FIELD_INDEX
+                field = swapAxisGameField(gameField.field)
+            }
+        }
+//        val newField = if (direction == Direction.UP || direction == Direction.DOWN) {
+            val newField = applyChanges(field, startIndex, finishIndex)
+        Log.d("GameViewModel", "applyChanges. before: $field after: $newField")
+//        } else {
+//            val swappedField = applyChanges(field, startIndex, finishIndex)
+//            swapAxisGameField(swappedField)
 //        }
-//    }
-//
-//    private fun iterateItemsX(gameField: GameField, startIndex: Int, finishIndex: Int) {
-//
-//    }
+//        _field.value = GameField(field = newField as MutableList<MutableList<Int>>)
+    }
+
+    private fun applyChanges(
+        field: List<List<Int>>,
+        startIndex: Int,
+        finishIndex: Int
+    ): List<List<Int>> {
+        val newRow = mutableListOf<List<Int>>()
+        field.forEach { row ->
+            newRow.add(iterateItemsAxis(row, startIndex, finishIndex))
+        }
+        return newRow.toList()
+    }
+
+    private fun swapAxisGameField(field: List<List<Int>>): List<List<Int>> {
+        val swapAxis = mutableListOf<List<Int>>()
+        repeat(4) { y ->
+            val newRow = mutableListOf<Int>()
+            repeat(4) { x ->
+                newRow.add(field[x][y])
+            }
+            swapAxis.add(newRow.toList())
+        }
+        return swapAxis.toList()
+    }
+
+    private fun iterateItemsAxis(row: List<Int>, startIndex: Int, finishIndex: Int): List<Int> {
+        Log.d("GameViewModel", "iterateItemsAxis row $row")
+        val newRow = row as MutableList<Int>
+        val joinIndexes = HashSet<Int>()
+        val c = if (finishIndex == MAX_FIELD_INDEX) {
+            1
+        } else {
+            -1
+        }
+        for (i in startIndex until finishIndex) {
+            val item = row[i]
+            val nextItem = row[i + c]
+            if (item != 0 && item == nextItem) {
+                joinIndexes.add(i)
+            }
+        }
+        if (joinIndexes.size == 3) {
+            joinIndexes.remove(1)
+        }
+        joinIndexes.toList().forEach {
+            newRow[it] = row[it] + row[it-c]
+        }
+        Log.d("GameViewModel", "iterateItemsAxis $row -> $newRow")
+        return newRow.toList()
+    }
+
+    private companion object {
+
+        private const val MIN_FIELD_INDEX = 0
+        private const val MAX_FIELD_INDEX = 3
+    }
 }
