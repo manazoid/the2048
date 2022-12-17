@@ -1,7 +1,296 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:layout="">
+    android:layout_height="match_parent">
 
-</androidx.fragment.app.FragmentContainerView>
+    <TableLayout
+        android:id="@+id/table_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/field_background"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:id="@+id/tr_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_00"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_01"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_02"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_03"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tr_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_10"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_11"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_12"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_13"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tr_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_20"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_21"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_22"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_23"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tr_4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_30"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_31"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcV_item_32"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcv_item_33"
+                android:name="com.example.the2048.presentation.GameItemFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_item" />
+        </TableRow>
+    </TableLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fcv_game_title"
+        android:name="com.example.the2048.presentation.GameItemFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/table_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_item"
+        tools:name="com.example.the2048.presentation.GameItemFragment" />
+
+    <Button
+        android:id="@+id/undo_button"
+        android:layout_width="109dp"
+        android:layout_height="wrap_content"
+        android:text="@string/undo_label"
+        app:layout_constraintBottom_toTopOf="@+id/table_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/reset_button"
+        app:layout_constraintTop_toBottomOf="@+id/cv_bestscore" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="109dp"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_label"
+        app:layout_constraintBottom_toTopOf="@+id/table_container"
+        app:layout_constraintDimensionRatio=""
+        app:layout_constraintEnd_toStartOf="@+id/undo_button"
+        app:layout_constraintStart_toEndOf="@+id/fcv_game_title"
+        app:layout_constraintTop_toBottomOf="@+id/cv_score" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_bestscore"
+        android:layout_width="109dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/undo_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cv_score"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/title_dark"
+            android:minWidth="88dp"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tv_best_score_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bestscore_label"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_best_score_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1000"
+                android:textColor="@color/title_light" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/reset_button"
+        app:layout_constraintEnd_toStartOf="@+id/cv_bestscore"
+        app:layout_constraintStart_toEndOf="@+id/fcv_game_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <LinearLayout
+            android:layout_width="109dp"
+            android:layout_height="match_parent"
+            android:background="@color/title_dark"
+            android:minWidth="88dp"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tv_score_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score_label"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_score_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/title_light" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/rules"
+        android:textColor="@color/field"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/rules_title"
+        android:textColor="@color/title_dark"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/table_container"
+        app:layout_constraintVertical_chainStyle="packed" />
+</androidx.constraintlayout.widget.ConstraintLayout>
