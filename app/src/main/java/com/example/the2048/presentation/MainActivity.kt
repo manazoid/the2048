@@ -1,9 +1,11 @@
 package com.example.the2048.presentation
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.ViewModelProvider
@@ -14,10 +16,13 @@ import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
 import kotlin.math.abs
 
+private const val s = "Отмена"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDetector: GestureDetectorCompat
 
+    private val gestureLocked = false
     private val viewModelFactory by lazy {
         GameViewModelFactory(application)
     }
@@ -30,10 +35,59 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        clickListeners()
         applyGestureDetector()
         startGameEvent()
         observeLiveData()
+        showTitle()
+    }
+
+    private fun showTitle() {
+        launchNewGameItem(binding.fcvGameTitle.id, "2048", false)
+    }
+
+    private fun clickListeners() {
+        binding.resetButton.setOnClickListener {
+            basicAlert(R.string.reset_field)
+        }
+        binding.undoButton.setOnClickListener {
+            viewModel.undo.value?.let { it1 ->
+                Log.d("MainActivity", "clickListeners $it1")
+                viewModel.undoLatestAction(it1)
+            }
+        }
+    }
+
+    private val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+        Toast.makeText(applicationContext,
+            android.R.string.yes, Toast.LENGTH_SHORT).show()
+    }
+    private val negativeButtonClick = { dialog: DialogInterface, which: Int ->
+        Toast.makeText(applicationContext,
+            android.R.string.no, Toast.LENGTH_SHORT).show()
+    }
+    private val neutralButtonClick = { dialog: DialogInterface, which: Int ->
+        Toast.makeText(applicationContext,
+            "Maybe", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun basicAlert(title: Int) {
+        AlertDialog.Builder(this).apply {
+            setTitle(title)
+            setMessage(R.string.would_like_repeat_again)
+            setPositiveButton(R.string.okay_label) { dialog, which ->
+                Toast.makeText(applicationContext,
+                    R.string.retry_button, Toast.LENGTH_SHORT).show()
+            }
+            setNegativeButton(R.string.cancel_label) { dialog, which ->
+                Toast.makeText(applicationContext,
+                    R.string.app_name, Toast.LENGTH_SHORT).show()
+            }
+            setIcon(android.R.drawable.ic_dialog_alert)
+            show()
+        }
     }
 
     private fun observeLiveData() {
@@ -42,20 +96,18 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.field.observe(this) {
             Log.d("GameFragment", "observe field $it")
-            fieldGenerate(it, viewModel.items.value!!)
+            viewModel.items.value?.let { itemToAnimate -> fieldGenerate(it, itemToAnimate) }
         }
-        viewModel.shouldGameFinish.observe(this) {
-            Log.d("GameFragment", "shouldGameFinish")
-        }
-    }
+//        viewModel.shouldGameFinish.observe(this) {
+//            val title = String.format(
+//                R.string.game_over,
+//                viewModel.field.score
+//            )
+//            basicAlert(title)
+//        }
+        viewModel.shouldLockGestures.observe(this) {
 
-    private fun startTileAnimation(it: NewItem) {
-        val x = it.coordinates[0]
-        val y = it.coordinates[1]
-        val scale = AnimationUtils.loadAnimation(this, R.anim.scale)
-        val tableRow = tableRow(x)
-        val current = tableRow.getVirtualChildAt(y)
-        current.startAnimation(scale)
+        }
     }
 
     private fun tableRow(x: Int) = when (x) {
@@ -72,15 +124,16 @@ class MainActivity : AppCompatActivity() {
         gameField.field.forEachIndexed { x, row ->
             val tableRow = tableRow(x)
             row.forEachIndexed { y, item ->
+                val current = tableRow.getVirtualChildAt(y)
                 if (item != 0) {
-                    var animation = false
-                    if (x == update.coordinates[0]) {
-                        if (y == update.coordinates[1]) {
-                            animation = true
-                        }
-                    }
-                    val current = tableRow.getVirtualChildAt(y)
-                    launchNewGameItem(current.id, item.toString(), animation)
+                    launchNewGameItem(
+                        current.id,
+                        item.toString(),
+                        false
+//                        y == update.coordinates[1] && x == update.coordinates[0]
+                    )
+                } else {
+                    launchNewGameItem(current.id, "", false)
                 }
             }
         }
@@ -92,11 +145,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun applyGestureDetector() {
         mDetector = GestureDetectorCompat(viewModel.application, MyGestureListener())
-    }
-
-    override fun onStart() {
-        super.onStart()
-        _binding = ActivityMainBinding.inflate(layoutInflater)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -122,9 +170,7 @@ class MainActivity : AppCompatActivity() {
             val delta = abs(velocityX) - abs(velocityY)
             val swipeDetectAxisY = detectDirection(delta)
             if (swipeDetectAxisY) {
-                // DETECT
-                // TRUE -> ↑
-                // FALSE -> ↓
+                // DETECT / TRUE -> ↑ / FALSE -> ↓
                 val detect = detectDirection(velocityY)
                 if (detect) {
                     onSwipeTop()
@@ -133,9 +179,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 Log.d("swipeDetectAxisY", "move velocityY $detect")
             } else {
-                // DETECT
-                // TRUE -> ←
-                // FALSE -> →
+                // DETECT / TRUE -> ← / FALSE -> →
                 val detect = detectDirection(velocityX)
                 if (detect) {
                     onSwipeLeft()

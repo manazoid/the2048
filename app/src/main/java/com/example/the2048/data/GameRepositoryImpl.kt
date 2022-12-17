@@ -3,14 +3,13 @@ package com.example.the2048.data
 import android.util.Log
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
+import com.example.the2048.domain.entity.NewItem.Companion.EMPTY_ITEM
+import com.example.the2048.domain.entity.NewItem.Companion.PRIMARY_NUMBER
+import com.example.the2048.domain.entity.NewItem.Companion.SECONDARY_NUMBER
 import com.example.the2048.domain.repository.GameRepository
 import kotlin.random.Random
 
 object GameRepositoryImpl : GameRepository {
-
-    private const val PRIMARY_NUMBER = 2
-    private const val SECONDARY_NUMBER = 4
-    private const val EMPTY_ITEM = 0
 
     override fun generateNewItem(gameField: GameField): NewItem? {
         val freeItemsIndexes = HashSet<List<Int>>()

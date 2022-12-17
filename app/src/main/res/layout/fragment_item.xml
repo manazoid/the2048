@@ -15,7 +15,7 @@
         android:layout_margin="4dp"
         android:orientation="vertical"
         android:textAlignment="center"
-        app:cardBackgroundColor="@color/step_1"
+        app:cardBackgroundColor="@color/step_11"
         app:cardCornerRadius="24dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
