@@ -1,7 +1,10 @@
 package com.example.the2048.presentation
 
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -15,14 +18,16 @@ import com.example.the2048.domain.entity.Direction
 import com.example.the2048.domain.entity.GameField
 import com.example.the2048.domain.entity.NewItem
 import kotlin.math.abs
+import kotlin.properties.Delegates
 
 private const val s = "Отмена"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDetector: GestureDetectorCompat
+    private lateinit var prefs: SharedPreferences
+    private var gestureLocked by Delegates.notNull<Boolean>()
 
-    private val gestureLocked = false
     private val viewModelFactory by lazy {
         GameViewModelFactory(application)
     }
@@ -36,6 +41,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
+        prefs = defaultPreference(this)
+        viewModel.setupBestScore(prefs.bestScore)
+        gestureLocked = false
         setContentView(binding.root)
         clickListeners()
         applyGestureDetector()
@@ -50,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun clickListeners() {
         binding.resetButton.setOnClickListener {
-            basicAlert(R.string.reset_field)
+            basicAlert(R.string.reset_field, android.R.drawable.ic_dialog_alert)
         }
         binding.undoButton.setOnClickListener {
             viewModel.undo.value?.let { it1 ->
@@ -61,33 +69,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val positiveButtonClick = { dialog: DialogInterface, which: Int ->
-        Toast.makeText(applicationContext,
-            android.R.string.yes, Toast.LENGTH_SHORT).show()
-    }
-    private val negativeButtonClick = { dialog: DialogInterface, which: Int ->
-        Toast.makeText(applicationContext,
-            android.R.string.no, Toast.LENGTH_SHORT).show()
-    }
-    private val neutralButtonClick = { dialog: DialogInterface, which: Int ->
-        Toast.makeText(applicationContext,
-            "Maybe", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            applicationContext,
+            R.string.retry_button, Toast.LENGTH_SHORT
+        ).show()
     }
 
-    private fun basicAlert(title: Int) {
-        AlertDialog.Builder(this).apply {
+    private fun basicAlert(title: Int, icon: Int?) {
+        val alert = AlertDialog.Builder(this).apply {
             setTitle(title)
             setMessage(R.string.would_like_repeat_again)
-            setPositiveButton(R.string.okay_label) { dialog, which ->
-                Toast.makeText(applicationContext,
-                    R.string.retry_button, Toast.LENGTH_SHORT).show()
-            }
-            setNegativeButton(R.string.cancel_label) { dialog, which ->
-                Toast.makeText(applicationContext,
-                    R.string.app_name, Toast.LENGTH_SHORT).show()
-            }
-            setIcon(android.R.drawable.ic_dialog_alert)
-            show()
+            setPositiveButton(R.string.okay_label, positiveButtonClick)
+            setNegativeButton(R.string.cancel_label, null)
         }
+        icon?.let { alert.setIcon(icon) }
+        alert.show()
     }
 
     private fun observeLiveData() {
@@ -101,12 +97,19 @@ class MainActivity : AppCompatActivity() {
 //        viewModel.shouldGameFinish.observe(this) {
 //            val title = String.format(
 //                R.string.game_over,
-//                viewModel.field.score
+//                viewModel.
 //            )
 //            basicAlert(title)
 //        }
         viewModel.shouldLockGestures.observe(this) {
-
+            gestureLocked = it
+        }
+        viewModel.bestScore.observe(this) {
+            prefs.bestScore = it
+            binding.tvBestScoreValue.text = it.toString()
+        }
+        viewModel.currentScore.observe(this) {
+            binding.tvScoreValue.text = it.toString()
         }
     }
 
@@ -224,5 +227,39 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateNewItem() {
         viewModel.generateNewItem(viewModel.field.value as GameField)
+    }
+
+    private companion object {
+
+        private const val BEST_SCORE = "BEST_SCORE"
+
+        fun defaultPreference(context: Context): SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(context)
+
+        fun customPreference(context: Context, name: String): SharedPreferences =
+            context.getSharedPreferences(name, Context.MODE_PRIVATE)
+
+        inline fun SharedPreferences.editMe(operation: (SharedPreferences.Editor) -> Unit) {
+            val editMe = edit()
+            operation(editMe)
+            editMe.apply()
+        }
+
+        var SharedPreferences.bestScore
+            get() = getInt(BEST_SCORE, 0)
+            set(value) {
+                editMe {
+                    it.putInt(BEST_SCORE, value)
+                }
+            }
+
+        var SharedPreferences.clearValues
+            get() = run { }
+            set(value) {
+                editMe {
+                    it.clear()
+                }
+            }
+
     }
 }

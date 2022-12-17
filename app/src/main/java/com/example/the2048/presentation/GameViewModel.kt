@@ -41,6 +41,14 @@ class GameViewModel(
     val shouldGameFinish: LiveData<Unit>
         get() = _shouldGameFinish
 
+    private val _currentScore = MutableLiveData<Int>()
+    val currentScore: LiveData<Int>
+        get() = _currentScore
+
+    private val _bestScore = MutableLiveData<Int>()
+    val bestScore: LiveData<Int>
+        get() = _bestScore
+
     fun startGame() {
         val field = mutableListOf(
 //            mutableListOf(2, 2, 2, 2),
@@ -59,6 +67,11 @@ class GameViewModel(
         }
     }
 
+    fun restartGame() {
+        nullGameData()
+        startGame()
+    }
+
     fun generateNewItem(gameField: GameField) {
         Log.d("GameViewModel", "generateNewItem $gameField")
         val newItems = generateNewItemUseCase(gameField)
@@ -75,6 +88,18 @@ class GameViewModel(
 
     fun undoLatestAction(undo: GameField) {
         _field.value = undo
+        nullGameData()
+    }
+
+    fun setupBestScore(score: Int) {
+        _bestScore.value = score
+    }
+
+    fun setupFieldFromPreference() {
+
+    }
+
+    private fun nullGameData() {
         _undo.value = null
         _items.value = null
     }
