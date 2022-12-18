@@ -2,6 +2,7 @@ package com.example.the2048.presentation
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.DialogInterface.OnClickListener
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -58,7 +59,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun clickListeners() {
         binding.resetButton.setOnClickListener {
-            basicAlert(R.string.reset_field, android.R.drawable.ic_dialog_alert)
+            basicAlert(
+                R.string.reset_field,
+                android.R.drawable.ic_dialog_alert,
+                resetPositiveButtonClick
+            ).show()
         }
         binding.undoButton.setOnClickListener {
             viewModel.undo.value?.let { it1 ->
@@ -68,22 +73,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+    private val gameOverPositiveButton = { dialog: DialogInterface, which: Int ->
+        viewModel.restartGame()
+    }
+
+    private val resetPositiveButtonClick = { dialog: DialogInterface, which: Int ->
         Toast.makeText(
             applicationContext,
             R.string.retry_button, Toast.LENGTH_SHORT
         ).show()
     }
 
-    private fun basicAlert(title: Int, icon: Int?) {
-        val alert = AlertDialog.Builder(this).apply {
+    private fun basicAlert(title: String, icon: Int?, doOnPositive: OnClickListener): AlertDialog.Builder {
+        return AlertDialog.Builder(this).apply {
             setTitle(title)
             setMessage(R.string.would_like_repeat_again)
-            setPositiveButton(R.string.okay_label, positiveButtonClick)
+            setPositiveButton(R.string.okay_label, doOnPositive)
             setNegativeButton(R.string.cancel_label, null)
+            icon?.let { setIcon(icon) }
         }
-        icon?.let { alert.setIcon(icon) }
-        alert.show()
+    }
+
+    private fun basicAlert(title: Int, icon: Int?, doOnPositive: OnClickListener): AlertDialog.Builder {
+        return AlertDialog.Builder(this).apply {
+            setTitle(title)
+            setMessage(R.string.would_like_repeat_again)
+            setPositiveButton(R.string.okay_label, doOnPositive)
+            setNegativeButton(R.string.cancel_label, null)
+            icon?.let { setIcon(icon) }
+        }
     }
 
     private fun observeLiveData() {
@@ -94,13 +112,17 @@ class MainActivity : AppCompatActivity() {
             Log.d("GameFragment", "observe field $it")
             viewModel.items.value?.let { itemToAnimate -> fieldGenerate(it, itemToAnimate) }
         }
-//        viewModel.shouldGameFinish.observe(this) {
-//            val title = String.format(
-//                R.string.game_over,
-//                viewModel.
-//            )
-//            basicAlert(title)
-//        }
+        viewModel.shouldGameFinish.observe(this) {
+            val title = String.format(
+                getString(R.string.game_over),
+                viewModel.currentScore.value
+            )
+            basicAlert(
+                title,
+                null,
+                gameOverPositiveButton
+            ).show()
+        }
         viewModel.shouldLockGestures.observe(this) {
             gestureLocked = it
         }
