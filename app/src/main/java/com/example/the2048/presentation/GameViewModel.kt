@@ -52,17 +52,18 @@ class GameViewModel(
 
     fun startGame() {
         val field = mutableListOf(
+            mutableListOf(8, 0, 0, 8),
 //            mutableListOf(2, 2, 2, 2),
-//            mutableListOf(8, 0, 0, 8),
-//            mutableListOf(8, 0, 0, 8),
+            mutableListOf(8, 0, 4, 4),
 //            mutableListOf(8, 4, 4, 8),
-            mutableListOf(0, 0, 2, 0),
-            mutableListOf(0, 0, 0, 0),
+//            mutableListOf(0, 0, 2, 0),
+//            mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
         )
         val newField = GameField(field)
         _field.value = newField
+        _currentScore.value = INITIAL_SCORE
         repeat(2) {
             generateNewItem(newField)
         }
@@ -101,42 +102,104 @@ class GameViewModel(
         _items.value = null
     }
 
-    fun moveItems(gameField: GameField, direction: Direction) {
+    fun moveItems(gameField: GameField, direction: Direction, lastScore: Int) {
         val fieldRotation = when (direction) {
             Direction.RIGHT -> 0
             Direction.DOWN -> 1
             Direction.LEFT -> 2
             Direction.UP -> 3
         }
-//        val field = swapAxisGameField(gameField.field, fieldRotation)
-//        val newField = if (direction == Direction.UP || direction == Direction.DOWN) {
-//            val swappedField = applyChanges(field)
-//            swapAxisGameField(swappedField)
-//        } else {
-//            val appliedField = applyChanges(field)
-//            Log.d("GameViewModel", "applyChanges. before: $field after: $appliedField")
-//            appliedField
-//        }
-        _field.value = GameField(
-            field = swapAxisGameField(
-                gameField.field,
-                fieldRotation
-            )
-        )
+//        var field = swapAxisGameField(gameField.field, fieldRotation)
+        var field = gameField.field
+        field = moveAndSumItems(field, lastScore)
+//        val rotateReverse = FIELD_SIZE - fieldRotation
+//        field = swapAxisGameField(field, rotateReverse)
+        _field.value = GameField(field)
+    }
+
+    private fun moveAndSumItems(field: MutableList<MutableList<Int>>, lastScore: Int): MutableList<MutableList<Int>> {
+        val range = MIN_FIELD_INDEX until MAX_FIELD_INDEX
+        val reversedRange = MAX_FIELD_INDEX downTo DROP_AMOUNT
+        for (x in range) {
+            val row = field[x]
+            field[x] = moveItemsList(row, range)
+            field[x] = sumItemsList(row, reversedRange, range, lastScore)
+        }
+        return field
+    }
+
+
+    private fun sumItemsList(
+        row: MutableList<Int>,
+        reversedRange: IntProgression,
+        range: kotlin.ranges.IntRange,
+        lastScore: Int,
+    ): MutableList<Int> {
+        var count = MIN_SUM_ITERATE
+        for (i in reversedRange) {
+            val first = row[i]
+            val second = row[i - C]
+            if (first != EMPTY_ITEM && second != EMPTY_ITEM && first == second) {
+                count++
+                val sum = first + second
+                row[i] = sum
+                _currentScore.value = lastScore + sum
+                row[i - C] = EMPTY_ITEM
+            }
+        }
+        if (count != MIN_SUM_ITERATE) {
+            return moveItemsList(row, range)
+        }
+        return row
+    }
+
+    private fun moveItemsList(
+        row: MutableList<Int>,
+        range: kotlin.ranges.IntRange
+    ): MutableList<Int> {
+        var count = MIN_NOT_MOVED_AMOUNT
+        for (i in range) {
+            val second = row[i + C]
+            if (second == EMPTY_ITEM) {
+                row[i] = row[i + C].also { row[i + C] = row[i] }
+            }
+        }
+        for (i in MIN_FIELD_INDEX..C) {
+            if (row[i] != EMPTY_ITEM && row[i + C] == EMPTY_ITEM) {
+                count++
+            }
+        }
+        if (count != MIN_NOT_MOVED_AMOUNT) {
+            var newRow = row
+            newRow = moveItemsList(newRow, range)
+            return newRow
+        }
+        return row
     }
 
     private fun swapAxisGameField(
-        field: List<List<Int>>,
+        field: MutableList<MutableList<Int>>,
         rotateIterationCount: Int
     ): MutableList<MutableList<Int>> {
-        var newField = field as MutableList<MutableList<Int>>
+        if (rotateIterationCount == MAX_ROTATE) {
+            return field
+        }
+        var newField = field
         var swapAxis: MutableList<MutableList<Int>>
-        repeat(rotateIterationCount) {
+        val rotate = when (rotateIterationCount) {
+            COUNTER_CLOCKWISE_ROTATE -> 1
+            else -> rotateIterationCount
+        }
+        repeat(rotate) {
             swapAxis = mutableListOf<MutableList<Int>>()
             field.forEachIndexed { x, row ->
                 val newRow = mutableListOf<Int>()
                 row.forEachIndexed { y, item ->
-                    newRow.add(field[y][MAX_FIELD_INDEX-x])
+                    if (rotateIterationCount < COUNTER_CLOCKWISE_ROTATE) {
+                        newRow.add(field[MAX_FIELD_INDEX - y][x])
+                    } else {
+                        newRow.add(field[y][MAX_FIELD_INDEX - x])
+                    }
                 }
                 swapAxis.add(newRow)
             }
@@ -145,36 +208,17 @@ class GameViewModel(
         return newField
     }
 
-    private fun iterateItemsAxis(row: List<Int>, startIndex: Int, finishIndex: Int): List<Int> {
-        val newRow = row as MutableList<Int>
-        val joinIndexes = mutableListOf<Int>()
-        val c = calculateCoefficient(finishIndex)
-        for (i in startIndex until finishIndex) {
-            val item = row[i]
-            val nextItem = row[i + c]
-            if (item != 0 && item == nextItem) {
-                joinIndexes.add(i)
-            }
-        }
-        joinIndexes.toList().forEach {
-            newRow[it] = row[it] + row[it + c]
-            newRow[it + c] = 0
-        }
-        Log.d("GameViewModel", "iterateItemsAxis $row -> $newRow")
-        Log.d("GameViewModel", "joinIndexes $joinIndexes")
-        return newRow.toList()
-    }
-
-    private fun calculateCoefficient(finishIndex: Int) = if (finishIndex == MAX_FIELD_INDEX) {
-        1
-    } else {
-        -1
-    }
-
     private companion object {
 
-        private const val MIN_FIELD_INDEX = 0
-        private const val MAX_FIELD_INDEX = 3
         private const val FIELD_SIZE = 4
+        private const val MAX_ROTATE = 4
+        private const val MIN_FIELD_INDEX = 0
+        private const val MAX_FIELD_INDEX = FIELD_SIZE - 1
+        private const val COUNTER_CLOCKWISE_ROTATE = 3
+        private const val DROP_AMOUNT = MIN_FIELD_INDEX + 1
+        private const val MIN_NOT_MOVED_AMOUNT = 0
+        private const val MIN_SUM_ITERATE = 0
+        private const val INITIAL_SCORE = 0
+        private const val C = 1
     }
 }

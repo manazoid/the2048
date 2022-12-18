@@ -239,7 +239,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveItemsByDirection(direction: Direction) {
-        viewModel.moveItems(viewModel.field.value as GameField, direction)
+        viewModel.currentScore.value?.let { viewModel.moveItems(viewModel.field.value as GameField, direction, it) }
     }
 
     override fun onDestroy() {
