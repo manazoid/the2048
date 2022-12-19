@@ -50,22 +50,24 @@ class GameViewModel(
         get() = _bestScore
 
     fun startGame() {
-        val field = mutableListOf(
+        val initField = mutableListOf(
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
         )
-        val newField = GameField(field)
+        val newField = GameField(initField)
         _field.value = newField
         _currentScore.value = INITIAL_SCORE
         repeat(2) {
             generateNewItem(newField)
         }
+        field.value?.let {
+            _undo.value = it
+        }
     }
 
     fun restartGame() {
-        nullGameData()
         startGame()
     }
 
@@ -101,12 +103,11 @@ class GameViewModel(
         }
     }
 
-    private fun nullGameData() {
-        _undo.value = null
+    fun saveUndoPoint(gameField: GameField) {
+        _undo.value = gameField
     }
 
     fun moveItems(gameField: GameField, direction: Direction, lastScore: Int) {
-        _undo.value = gameField
         val fieldRotation = when (direction) {
             Direction.RIGHT -> 0
             Direction.DOWN -> 1

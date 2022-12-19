@@ -192,6 +192,7 @@ class MainActivity : AppCompatActivity() {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
+            viewModel.field.value?.let { viewModel.saveUndoPoint(it) }
             val delta = abs(velocityX) - abs(velocityY)
             val swipeDetectAxisY = detectDirection(delta)
             if (swipeDetectAxisY) {
