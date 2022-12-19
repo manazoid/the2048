@@ -34,8 +34,11 @@ class GameItemFragment : Fragment() {
             text = this?.getString(ITEM_TEXT)
             animation = this?.getBoolean(ITEM_ANIMATION) == true
         }
-        binding.cardText.text = text
-        val textColorId = if (text?.length == 1) {
+        binding.cardText.text = when (text) {
+            "0" -> ""
+            else -> text
+        }
+        val textColorId = if (text == ITEM_1 || text == ITEM_2) {
             R.color.title_dark
         } else {
             R.color.title_light

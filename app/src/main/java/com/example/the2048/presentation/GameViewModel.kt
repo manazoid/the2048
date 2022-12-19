@@ -2,7 +2,6 @@ package com.example.the2048.presentation
 
 import android.app.Application
 import android.util.Log
-import androidx.annotation.IntRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -52,12 +51,8 @@ class GameViewModel(
 
     fun startGame() {
         val field = mutableListOf(
-            mutableListOf(8, 0, 0, 8),
-//            mutableListOf(2, 2, 2, 2),
-            mutableListOf(8, 0, 4, 4),
-//            mutableListOf(8, 4, 4, 8),
-//            mutableListOf(0, 0, 2, 0),
-//            mutableListOf(0, 0, 0, 0),
+            mutableListOf(0, 0, 0, 0),
+            mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
             mutableListOf(0, 0, 0, 0),
         )
@@ -89,35 +84,46 @@ class GameViewModel(
     }
 
     fun undoLatestAction(undo: GameField) {
+        _items.value = null
         _field.value = undo
-        nullGameData()
+        _undo.value = null
     }
 
     fun setupBestScore(score: Int) {
         _bestScore.value = score
     }
 
+    fun updateBestScore(score: Int) {
+        bestScore.value?.let {
+            if (score > it) {
+                _bestScore.value = score
+            }
+        }
+    }
+
     private fun nullGameData() {
         _undo.value = null
-        _items.value = null
     }
 
     fun moveItems(gameField: GameField, direction: Direction, lastScore: Int) {
+        _undo.value = gameField
         val fieldRotation = when (direction) {
             Direction.RIGHT -> 0
             Direction.DOWN -> 1
             Direction.LEFT -> 2
             Direction.UP -> 3
         }
-//        var field = swapAxisGameField(gameField.field, fieldRotation)
-        var field = gameField.field
+        var field = swapAxisGameField(gameField.field, fieldRotation)
         field = moveAndSumItems(field, lastScore)
-//        val rotateReverse = FIELD_SIZE - fieldRotation
-//        field = swapAxisGameField(field, rotateReverse)
+        val rotateReversed = FIELD_SIZE - fieldRotation
+        field = swapAxisGameField(field, rotateReversed)
         _field.value = GameField(field)
     }
 
-    private fun moveAndSumItems(field: MutableList<MutableList<Int>>, lastScore: Int): MutableList<MutableList<Int>> {
+    private fun moveAndSumItems(
+        field: MutableList<MutableList<Int>>,
+        lastScore: Int
+    ): MutableList<MutableList<Int>> {
         val range = MIN_FIELD_INDEX until MAX_FIELD_INDEX
         val reversedRange = MAX_FIELD_INDEX downTo DROP_AMOUNT
         for (x in range) {
@@ -132,7 +138,7 @@ class GameViewModel(
     private fun sumItemsList(
         row: MutableList<Int>,
         reversedRange: IntProgression,
-        range: kotlin.ranges.IntRange,
+        range: IntRange,
         lastScore: Int,
     ): MutableList<Int> {
         var count = MIN_SUM_ITERATE
@@ -145,6 +151,9 @@ class GameViewModel(
                 row[i] = sum
                 _currentScore.value = lastScore + sum
                 row[i - C] = EMPTY_ITEM
+                if (sum == FINISH_GAME_ITEM) {
+                    _shouldGameFinish.value = Unit
+                }
             }
         }
         if (count != MIN_SUM_ITERATE) {
@@ -155,7 +164,7 @@ class GameViewModel(
 
     private fun moveItemsList(
         row: MutableList<Int>,
-        range: kotlin.ranges.IntRange
+        range: IntRange
     ): MutableList<Int> {
         var count = MIN_NOT_MOVED_AMOUNT
         for (i in range) {
@@ -181,42 +190,53 @@ class GameViewModel(
         field: MutableList<MutableList<Int>>,
         rotateIterationCount: Int
     ): MutableList<MutableList<Int>> {
-        if (rotateIterationCount == MAX_ROTATE) {
+        if (rotateIterationCount == MAX_ROTATE || rotateIterationCount == MIN_ROTATE) {
             return field
         }
-        var newField = field
-        var swapAxis: MutableList<MutableList<Int>>
         val rotate = when (rotateIterationCount) {
             COUNTER_CLOCKWISE_ROTATE -> 1
             else -> rotateIterationCount
         }
+        var newField = field
         repeat(rotate) {
-            swapAxis = mutableListOf<MutableList<Int>>()
-            field.forEachIndexed { x, row ->
-                val newRow = mutableListOf<Int>()
-                row.forEachIndexed { y, item ->
-                    if (rotateIterationCount < COUNTER_CLOCKWISE_ROTATE) {
-                        newRow.add(field[MAX_FIELD_INDEX - y][x])
-                    } else {
-                        newRow.add(field[y][MAX_FIELD_INDEX - x])
-                    }
-                }
-                swapAxis.add(newRow)
-            }
-            newField = swapAxis
+            newField = swapAxisResult(
+                newField,
+                rotateIterationCount < COUNTER_CLOCKWISE_ROTATE
+            )
         }
         return newField
+    }
+
+    private fun swapAxisResult(
+        field: MutableList<MutableList<Int>>,
+        counterClockWise: Boolean
+    ): MutableList<MutableList<Int>> {
+        val swapAxis = mutableListOf<MutableList<Int>>()
+        field.forEachIndexed { x, row ->
+            val newRow = mutableListOf<Int>()
+            row.forEachIndexed { y, _ ->
+                if (counterClockWise) {
+                    newRow.add(field[MAX_FIELD_INDEX - y][x])
+                } else {
+                    newRow.add(field[y][MAX_FIELD_INDEX - x])
+                }
+            }
+            swapAxis.add(newRow)
+        }
+        return swapAxis
     }
 
     private companion object {
 
         private const val FIELD_SIZE = 4
+        private const val MIN_ROTATE = 0
         private const val MAX_ROTATE = 4
         private const val MIN_FIELD_INDEX = 0
         private const val MAX_FIELD_INDEX = FIELD_SIZE - 1
         private const val COUNTER_CLOCKWISE_ROTATE = 3
         private const val DROP_AMOUNT = MIN_FIELD_INDEX + 1
         private const val MIN_NOT_MOVED_AMOUNT = 0
+        private const val FINISH_GAME_ITEM = 2048
         private const val MIN_SUM_ITERATE = 0
         private const val INITIAL_SCORE = 0
         private const val C = 1

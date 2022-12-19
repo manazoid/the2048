@@ -5,10 +5,8 @@ import android.content.DialogInterface
 import android.content.DialogInterface.OnClickListener
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
@@ -41,16 +39,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        prefs = defaultPreference(this)
-        viewModel.setupBestScore(prefs.bestScore)
-        gestureLocked = false
-        setContentView(binding.root)
+        applyBindingPrefs()
         clickListeners()
         applyGestureDetector()
         startGameEvent()
         observeLiveData()
         showTitle()
+    }
+
+    private fun applyBindingPrefs() {
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        prefs = customPreference(this, PREFERENCE_NAME)
+        viewModel.setupBestScore(prefs.bestScore)
+        gestureLocked = false
     }
 
     private fun showTitle() {
@@ -62,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             basicAlert(
                 R.string.reset_field,
                 android.R.drawable.ic_dialog_alert,
-                resetPositiveButtonClick
+                positiveButtonClick
             ).show()
         }
         binding.undoButton.setOnClickListener {
@@ -73,18 +75,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val gameOverPositiveButton = { dialog: DialogInterface, which: Int ->
-        viewModel.restartGame()
+    private val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+      viewModel.restartGame()
     }
 
-    private val resetPositiveButtonClick = { dialog: DialogInterface, which: Int ->
-        Toast.makeText(
-            applicationContext,
-            R.string.retry_button, Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun basicAlert(title: String, icon: Int?, doOnPositive: OnClickListener): AlertDialog.Builder {
+    private fun basicAlert(
+        title: String,
+        icon: Int?,
+        doOnPositive: OnClickListener
+    ): AlertDialog.Builder {
         return AlertDialog.Builder(this).apply {
             setTitle(title)
             setMessage(R.string.would_like_repeat_again)
@@ -94,7 +93,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun basicAlert(title: Int, icon: Int?, doOnPositive: OnClickListener): AlertDialog.Builder {
+    private fun basicAlert(
+        title: Int,
+        icon: Int?,
+        doOnPositive: OnClickListener
+    ): AlertDialog.Builder {
         return AlertDialog.Builder(this).apply {
             setTitle(title)
             setMessage(R.string.would_like_repeat_again)
@@ -110,7 +113,9 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.field.observe(this) {
             Log.d("GameFragment", "observe field $it")
-            viewModel.items.value?.let { itemToAnimate -> fieldGenerate(it, itemToAnimate) }
+            viewModel.items.value?.let {
+                itemToAnimate -> fieldGenerate(it, itemToAnimate)
+            }
         }
         viewModel.shouldGameFinish.observe(this) {
             val title = String.format(
@@ -120,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             basicAlert(
                 title,
                 null,
-                gameOverPositiveButton
+                positiveButtonClick
             ).show()
         }
         viewModel.shouldLockGestures.observe(this) {
@@ -132,6 +137,7 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.currentScore.observe(this) {
             binding.tvScoreValue.text = it.toString()
+            viewModel.updateBestScore(it)
         }
     }
 
@@ -150,16 +156,11 @@ class MainActivity : AppCompatActivity() {
             val tableRow = tableRow(x)
             row.forEachIndexed { y, item ->
                 val current = tableRow.getVirtualChildAt(y)
-                if (item != 0) {
-                    launchNewGameItem(
-                        current.id,
-                        item.toString(),
-                        false
-//                        y == update.coordinates[1] && x == update.coordinates[0]
-                    )
-                } else {
-                    launchNewGameItem(current.id, "", false)
-                }
+                launchNewGameItem(
+                    current.id,
+                    item.toString(),
+                    y == update.coordinates[1] && x == update.coordinates[0]
+                )
             }
         }
     }
@@ -191,7 +192,6 @@ class MainActivity : AppCompatActivity() {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            Log.d("MyGestureListener", "onFling: $velocityX – $velocityY")
             val delta = abs(velocityX) - abs(velocityY)
             val swipeDetectAxisY = detectDirection(delta)
             if (swipeDetectAxisY) {
@@ -202,7 +202,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     onSwipeBottom()
                 }
-                Log.d("swipeDetectAxisY", "move velocityY $detect")
             } else {
                 // DETECT / TRUE -> ← / FALSE -> →
                 val detect = detectDirection(velocityX)
@@ -211,9 +210,8 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     onSwipeRight()
                 }
-                Log.d("swipeDetectAxisX", "move velocityX $detect")
             }
-//            generateNewItem()
+            generateNewItem()
             return true
         }
 
@@ -239,7 +237,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveItemsByDirection(direction: Direction) {
-        viewModel.currentScore.value?.let { viewModel.moveItems(viewModel.field.value as GameField, direction, it) }
+        viewModel.currentScore.value?.let { viewModel.moveItems(
+            viewModel.field.value as GameField,
+            direction,
+            it
+        ) }
     }
 
     override fun onDestroy() {
@@ -254,9 +256,7 @@ class MainActivity : AppCompatActivity() {
     private companion object {
 
         private const val BEST_SCORE = "BEST_SCORE"
-
-        fun defaultPreference(context: Context): SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context)
+        private const val PREFERENCE_NAME = "KIRILL_GAME_PREFERENCE"
 
         fun customPreference(context: Context, name: String): SharedPreferences =
             context.getSharedPreferences(name, Context.MODE_PRIVATE)
