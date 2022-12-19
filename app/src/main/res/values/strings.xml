@@ -7,11 +7,12 @@
     <string name="timer_label">Время: %s</string>
     <string name="reset_label">Reset</string>
     <string name="undo_label">Undo</string>
-    <string name="score_label">Score</string>
-    <string name="bestscore_label">Best score</string>
+    <string name="score_label">Очки</string>
+    <string name="bestscore_label">Лучший</string>
     <string name="okay_label">OK</string>
     <string name="cancel_label">Отмена</string>
     <string name="would_like_repeat_again">Хотите повторить попытку?</string>
     <string name="game_over">Игра завершена. Счёт: %s</string>
     <string name="reset_field">Сбросить</string>
+    <string name="credits">Kirill Bogomolov 2022</string>
 </resources>
